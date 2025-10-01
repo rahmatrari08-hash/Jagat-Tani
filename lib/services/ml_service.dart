@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'dart:developer' as developer;
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
+import 'image_preprocess.dart';
 
 class MLService {
   Interpreter? _interpreter;
@@ -29,7 +30,7 @@ class MLService {
     // Typical model input size; adjust to your model's expected size
     const int inputSize = 224;
 
-  final input = _preprocess(imagePath, inputSize, inputSize);
+  final input = preprocess(imagePath, inputSize, inputSize);
 
   // Assuming model outputs a 1 x 4 array of confidences
   final output = List.filled(4, 0.0).reshape([1, 4]);
@@ -54,7 +55,7 @@ class MLService {
     }
 
     const int inputSize = 224;
-  final input = _preprocess(imagePath, inputSize, inputSize);
+  final input = preprocess(imagePath, inputSize, inputSize);
 
   // assuming output size 1 x 3 (example)
   final output = List.filled(3, 0.0).reshape([1, 3]);
@@ -67,30 +68,9 @@ class MLService {
   }
 
   /// Preprocess image: load, resize and normalize to Float32List
-  /// Returns a Float32List shaped [1, height, width, 3]
-  Float32List _preprocess(String imagePath, int width, int height) {
-    final file = File(imagePath);
-    final bytes = file.readAsBytesSync();
-    img.Image? image = img.decodeImage(bytes);
-    if (image == null) throw Exception('Could not decode image');
-    final resized = img.copyResize(image, width: width, height: height);
-
-    final input = Float32List(width * height * 3);
-    int offset = 0;
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        final pixel = resized.getPixel(x, y);
-        // Pixel object provides r, g, b properties in newer image versions
-        final r = pixel.r / 255.0;
-        final g = pixel.g / 255.0;
-        final b = pixel.b / 255.0;
-        input[offset++] = r;
-        input[offset++] = g;
-        input[offset++] = b;
-      }
-    }
-
-    return input;
+  /// Public helper for tests. Returns a Float32List shaped [height * width * 3]
+  Float32List preprocess(String imagePath, int width, int height) {
+    return preprocessImage(imagePath, width, height);
   }
 
   String _diseaseLabel(int idx) {

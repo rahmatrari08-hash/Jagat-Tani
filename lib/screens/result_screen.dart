@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import '../services/ml_service.dart';
+// ResultScreen does not import MLService directly to keep the widget testable without
+// bringing in native tflite bindings. Provide a detectFn when constructing.
 
 class ResultScreen extends StatefulWidget {
   final String imagePath;
+  final Future<Map<String, dynamic>> Function(String) detectFn;
 
-  const ResultScreen({super.key, required this.imagePath});
+  const ResultScreen({super.key, required this.imagePath, required this.detectFn});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -24,9 +26,8 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   void _getPrediction() async {
-    MLService mlService = MLService();
     try {
-      var result = await mlService.detectDisease(widget.imagePath);
+      var result = await widget.detectFn(widget.imagePath);
       if (!mounted) return;
       setState(() {
         _prediction = result['label'];

@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import 'result_screen.dart';
+import '../services/ml_service.dart';
 import '../widgets/large_action_button.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -67,7 +68,10 @@ class _CameraScreenState extends State<CameraScreen> {
     // Navigate to result screen to run prediction
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ResultScreen(imagePath: image.path)),
+      MaterialPageRoute(builder: (context) => ResultScreen(imagePath: image.path, detectFn: (path) async {
+        final ml = MLService();
+        return ml.detectDisease(path);
+      })),
     );
   }
 
@@ -82,7 +86,10 @@ class _CameraScreenState extends State<CameraScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Image selected from gallery')));
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ResultScreen(imagePath: pickedFile.path)),
+        MaterialPageRoute(builder: (context) => ResultScreen(imagePath: pickedFile.path, detectFn: (path) async {
+          final ml = MLService();
+          return ml.detectDisease(path);
+        })),
       );
     }
   }
