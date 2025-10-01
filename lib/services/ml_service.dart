@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:developer' as developer;
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
 
@@ -12,9 +13,9 @@ class MLService {
     try {
       _interpreter = await Interpreter.fromAsset(assetPath.replaceFirst('assets/', ''));
       _modelAsset = assetPath;
-      print('Model $assetPath loaded.');
+      developer.log('Model $assetPath loaded.', name: 'MLService');
     } catch (e) {
-      print('Error loading model $assetPath: $e');
+      developer.log('Error loading model $assetPath: $e', name: 'MLService', level: 1000);
       rethrow;
     }
   }

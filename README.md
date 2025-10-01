@@ -1,4 +1,19 @@
-<<<<<<< HEAD
+# Jagat Tani
+
+A Flutter app for Indonesian rice farmers.
+
+Setup notes (models, Firebase, and API keys)
+
+- Models: place your TFLite models in `assets/models/`:
+	- `assets/models/paddy_leaf.tflite` (disease detection)
+	- `assets/models/fertilizer_recommender.tflite` (fertilizer recommendation)
+	After adding, run `flutter pub get`.
+
+- Firebase: run `flutterfire configure` locally to generate `lib/firebase_options.dart` and platform config files (`google-services.json`, `GoogleService-Info.plist`).
+
+- API keys: create a `.env` file at project root and add `OPENWEATHER_API_KEY=your_key_here`. Call `await dotenv.load()` in `main()` before using the weather service.
+
+After these steps you can run `flutter run` to test the app.
 # jagat_tani
 
 A new Flutter project.
@@ -15,7 +30,3 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
-=======
-# Jagat-Tani
-Jagat Tani aims to empower rice farmers in Indonesia by providing a multi-platform mobile and web application that uses Machine Learning to detect rice plant diseases. The app will provide farmers with actionable, easy-to-understand insights into disease management and weather-based farming recommendations.
->>>>>>> 7c4b7b5e9036c28c894da4451718e62e1e3e8a89

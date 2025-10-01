@@ -7,6 +7,7 @@ class ResultScreen extends StatefulWidget {
   const ResultScreen({super.key, required this.imagePath});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ResultScreenState createState() => _ResultScreenState();
 }
 

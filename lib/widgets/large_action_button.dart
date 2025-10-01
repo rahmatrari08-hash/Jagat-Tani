@@ -6,13 +6,14 @@ class LargeActionButton extends StatelessWidget {
   final Color? color;
   final IconData? icon;
 
+  // ignore: use_super_parameters
   const LargeActionButton({
-    Key? key,
+    super.key,
     required this.label,
     required this.onPressed,
     this.color,
     this.icon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
