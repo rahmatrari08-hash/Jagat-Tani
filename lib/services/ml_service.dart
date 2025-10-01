@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'dart:developer' as developer;
 import 'package:tflite_flutter/tflite_flutter.dart';
-import 'package:image/image.dart' as img;
 import 'image_preprocess.dart';
 
 class MLService {
