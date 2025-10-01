@@ -13,6 +13,8 @@ class ResultScreen extends StatefulWidget {
 class _ResultScreenState extends State<ResultScreen> {
   String _prediction = 'Menunggu Prediksi...';
   double _confidence = 0.0;
+  bool _loading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -22,12 +24,21 @@ class _ResultScreenState extends State<ResultScreen> {
 
   void _getPrediction() async {
     MLService mlService = MLService();
-    await mlService.loadModel();
-    var result = await mlService.detectDisease(widget.imagePath);
-    setState(() {
-      _prediction = result['label'];
-      _confidence = (result['confidence'] is double) ? result['confidence'] : 0.0;
-    });
+    try {
+      var result = await mlService.detectDisease(widget.imagePath);
+      if (!mounted) return;
+      setState(() {
+        _prediction = result['label'];
+        _confidence = (result['confidence'] is double) ? result['confidence'] : 0.0;
+        _loading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _error = 'Error saat prediksi: $e';
+        _loading = false;
+      });
+    }
   }
 
   @override
@@ -42,7 +53,18 @@ class _ResultScreenState extends State<ResultScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Card(
+            if (_loading)
+              Center(child: CircularProgressIndicator())
+            else if (_error != null)
+              Card(
+                color: Colors.red[50],
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(_error!, style: TextStyle(color: Colors.red)),
+                ),
+              )
+            else
+              Card(
               elevation: 3,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),

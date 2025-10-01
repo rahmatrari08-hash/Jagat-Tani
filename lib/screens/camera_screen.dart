@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import 'result_screen.dart';
 import '../widgets/large_action_button.dart';
@@ -25,12 +26,32 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   void _initializeCamera() async {
-    final cameras = await availableCameras();
-    final firstCamera = cameras.first;
+    try {
+      // Check camera permission
+      final status = await Permission.camera.request();
+      if (!status.isGranted) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Izin kamera diperlukan')));
+        return;
+      }
 
-    _controller = CameraController(firstCamera, ResolutionPreset.high);
-    _initializeControllerFuture = _controller.initialize();
-    setState(() {});
+      final cameras = await availableCameras();
+      if (cameras.isEmpty) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Kamera tidak tersedia')));
+        return;
+      }
+
+      final firstCamera = cameras.first;
+      _controller = CameraController(firstCamera, ResolutionPreset.high);
+      _initializeControllerFuture = _controller.initialize();
+      await _initializeControllerFuture;
+      if (!mounted) return;
+      setState(() {});
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal inisialisasi kamera: $e')));
+    }
   }
 
   // Ambil gambar dari kamera
@@ -107,6 +128,8 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   void dispose() {
     super.dispose();
-    _controller.dispose();
+    try {
+      _controller.dispose();
+    } catch (_) {}
   }
 }

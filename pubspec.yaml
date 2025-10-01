@@ -41,6 +41,10 @@ dependencies:
   firebase_core: ^2.10.0
   firebase_auth: ^4.4.0
   google_sign_in: ^6.0.0
+  image: ^4.0.17
+  flutter_dotenv: ^5.0.2
+  permission_handler: ^10.4.0
+  shared_preferences: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +67,10 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/models/paddy_leaf.tflite
+    - assets/models/fertilizer_recommender.tflite
 
   # To add assets to your application, add an assets section, like this:
   # assets:
